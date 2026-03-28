@@ -11,8 +11,8 @@
         $resetLink = "http://localhost:3000/reset-password?token=" . $token . "&email=" . $email;
     @endphp
 
-    <a href="{{ $resetLink }}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
-        Đổi Mật Khẩu Ngay
+    <a href="{{$resetLink}}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+        Nhấn vào đây để đổi mật khẩu
     </a>
 
     <p>Nếu bạn không yêu cầu đổi mật khẩu, vui lòng bỏ qua email này.</p>

@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Mail\ResetPasswordMail;
 
 
-
-class RestPasswordController extends Controller
+class ResetPasswordController extends Controller
 {
     public function Change_Password(Request $request) {
         $request->validate([
@@ -39,12 +39,8 @@ class RestPasswordController extends Controller
 
         ]);
 
-        $resetLink = "http://localhost:5173/reset-password?token=" . $token . "&email=" . $request->email;
+        Mail::to($request->email)->send(new ResetPasswordMail($token, $request->email));
 
-        Mail::raw("Xin chào!\n\nĐể đổi mật khẩu, vui lòng click vào đường link sau:\n" . $resetLink . "\n\nNếu bạn không yêu cầu, vui lòng bỏ qua thư này.", function ($message) use ($request)
-        {
-            $message->to($request->email)->subject('Yêu cầu khôi phục mật khẩu');
-        });
 
         return response()->json([
             'status' => 'success',

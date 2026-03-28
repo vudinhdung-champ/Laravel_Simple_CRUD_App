@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\RestPasswordController;
+use App\Http\Controllers\ResetPasswordController;
 
 
 Route::get('/', function () {
@@ -17,7 +17,7 @@ Route::post('/logout', [AuthController::class, 'Logout']);
 
 Route::post('/refresh', [AuthController::class, 'Refresh']);
 
-Route::post('/change_password', [RestPasswordController::class, 'Change_Password']);
+Route::post('/change_password', [ResetPasswordController::class, 'Change_Password']);
 
 Route::post('/reset_password', [RestPasswordController::class, 'Reset_Password']);
 

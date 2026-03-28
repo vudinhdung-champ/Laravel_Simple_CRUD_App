@@ -10,16 +10,23 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RestPasswordMail extends Mailable
+class ResetPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
+
+
+    // Khai báo 2 biến public để mail có thể dùng được //
+    public $token;
+    public $email;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($token, $email)
     {
-        //
+        $this->email = $email;
+        $this->token = $token;
+
     }
 
     /**
@@ -28,7 +35,7 @@ class RestPasswordMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Rest Password Mail',
+            subject: 'Yêu cầu khôi phục mật khẩu'
         );
     }
 
@@ -38,7 +45,7 @@ class RestPasswordMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.reset_password',
         );
     }
 
