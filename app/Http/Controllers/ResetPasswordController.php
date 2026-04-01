@@ -9,18 +9,20 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Mail\ResetPasswordMail;
+use App\Http\Requests\StoreResetPasswordRequest;
+use App\Notifications\ResetPasswordNotification;
 
 
 class ResetPasswordController extends Controller
 {
-    public function Change_Password(Request $request) {
+    public function changePassword(Request $request) {
         $request->validate([
             'email' => 'required'
         ]);
 
-        $checkValid = User::where('email', $request->email)->exists();
+        $user = User::where('email', $request->email)->first();
 
-        if(!$checkValid)
+        if(!$user)
         {
             return response()->json([
                 'status' => 'error',
@@ -39,7 +41,7 @@ class ResetPasswordController extends Controller
 
         ]);
 
-        Mail::to($request->email)->send(new ResetPasswordMail($token, $request->email));
+        $user->notify(new ResetPasswordNotification($token)); 
 
 
         return response()->json([
@@ -49,12 +51,7 @@ class ResetPasswordController extends Controller
 
     }
 
-    public function Reset_Password(Request $request) {
-        $request->validate([
-            'email' => 'required',
-            'token' => 'required',
-            'password' => ['required', 'min:8', 'confirmed']
-        ]);
+    public function resetPassword(StoreResetPasswordRequest $request) {
 
         $isValid = DB::table('password_reset_tokens')->where('email', $request->email)
                                                      ->where('token', $request->token)
@@ -88,5 +85,7 @@ class ResetPasswordController extends Controller
 
         return view('/login');
     }
+
+
 
 }

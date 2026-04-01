@@ -66,7 +66,7 @@ class AuthController extends Controller
                 'token' => $token,
                 'type' => 'bearer'
             ]
-        ], 201);
+        ], 200);
     } 
     
 
@@ -93,7 +93,7 @@ class AuthController extends Controller
                     'token' => $newToken,
                     'type' => 'bearer'
                 ]
-            ], 201);
+            ], 200);
         }
         catch(\Exception $e)
         {

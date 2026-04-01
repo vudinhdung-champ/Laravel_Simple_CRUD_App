@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('promises', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('promiser_name');
+            $table->string('promise_content');
+            $table->date('date_made');
+            $table->date('deadline')->nullable();
+            $table->string('status')->default('pending');
+            $table->integer('importance_level');
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */
