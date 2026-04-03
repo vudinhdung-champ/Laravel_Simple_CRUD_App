@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PromiseController;
+use App\Http\Controllers\NotebookController;
 
 
 
@@ -30,6 +31,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::apiResource('/promises', PromiseController::class);
 
+    Route::apiResource('/notebooks', NotebookController::class);
 
 });
 

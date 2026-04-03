@@ -10,32 +10,23 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use App\Models\User;
 
 
-class Promise extends Model
+class Notebook extends Model
 {
     use HasFactory, Notifiable;
 
     protected $fillable = [
         'user_id',
-        'promiser_name',
-        'promise_content',
-        'date_made',
-        'deadline',
-        'status',
-        'importance_level'
-
+        'title',
+        'content',
+        'category'
     ];
 
     protected $cast = [
-        'date_made' => 'date',
-        'deadline' => 'date',
-        'importance_level' => 'integer'
-
+        
     ];
 
     public function user() {
         return $this->belongsTo(User::class);
 
     }
-    
-
 }

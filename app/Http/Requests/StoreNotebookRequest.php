@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePromiseRequest extends FormRequest
+class StoreNotebookRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,20 +23,9 @@ class StorePromiseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'promiser_name' => 'required|string|max:255',
-            'promise_content' => 'required|string',
-            'date_made' => 'required|date',
-            'deadline' => 'nullable|date|after_or_equal:date_made',
-            'status' => 'nullable|string|in:pending,kept,broken',
-            'importance_level' => 'nullable|integer|min:1|max:5',
-            
-        ];
-    }
-
-    public function messages(): array {
-        return [
-
-
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'category' => 'required|string|max:20'
         ];
     }
 }

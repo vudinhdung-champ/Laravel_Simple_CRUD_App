@@ -73,7 +73,7 @@ class PromiseController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Update thành công',
-                'data' => $promises
+                'data' => $Promises
             ], 200);
 
 
