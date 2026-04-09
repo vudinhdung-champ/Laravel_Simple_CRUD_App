@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Promise;
 use App\Http\Requests\StorePromiseRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resource\PromiseResource;
 
 
 
@@ -20,7 +21,7 @@ class PromiseController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Xem danh sách thành công',
-                'data' => $promises
+                'data' => PromiseResource::collection($promises)->resolve(),
 
             ], 200);
 
@@ -50,7 +51,7 @@ class PromiseController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Tạo thành công',
-                'data' => $newPromises
+                'data' => (new PromiseResource($promises))->resolve(),
             ], 200);
 
 
@@ -65,15 +66,15 @@ class PromiseController extends Controller
 
     public function Update(StorePromiseRequest $request, $id) {
         try {
-            $Promises = Promise::where('user_id', Auth::id())
+            $promises = Promise::where('user_id', Auth::id())
                                 ->findOrFail($id);
 
-            $Promises->update($request->all());
+            $promises->update($request->all());
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Update thành công',
-                'data' => $Promises
+                'data' => (new PromiseResource($promises))->resolve(),
             ], 200);
 
 

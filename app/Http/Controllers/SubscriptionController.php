@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Subscription;
 use App\Http\Requests\StoreSubscriptionRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\SubscriptionResource;
 
 
 class SubscriptionController extends Controller
@@ -18,7 +19,7 @@ class SubscriptionController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data' => $subscriptions,
+                'data' => SubscriptionResource::collection($subscriptions)->resolve(),
 
             ], 200);
 
@@ -49,7 +50,7 @@ class SubscriptionController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Tạo thành công',
-                'data' => $subscriptions,
+                'data' => (new SubscriptionResource($subscriptions))->resolve(),
             ], 200);
 
 
@@ -74,7 +75,7 @@ class SubscriptionController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Update thành công',
-                'data' => $subscriptions
+                'data' => (new SubscriptionResource($subscriptions))->resolve(),
 
             ], 200);
 

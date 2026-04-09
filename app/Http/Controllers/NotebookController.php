@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Notebook;
 use App\Http\Requests\StoreNotebookRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\NotebookResource;
 
 
 
@@ -20,7 +21,7 @@ class NotebookController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Thành công',
-                'data' => $documents
+                'data' => NotebookResource::collection($documents)->resolve(),
             ], 200);
 
 
@@ -48,7 +49,7 @@ class NotebookController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Tạo thành công',
-                'data' => $documents
+                'data' => (new NotebookResource($documents))->resolve(),
         
             ], 200);
 
@@ -73,7 +74,7 @@ class NotebookController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Sửa thành công',
-                'data' => $documents
+                'data' => (new NotebookResource($documents))->resolve(),
 
             ], 200);
 
@@ -107,7 +108,6 @@ class NotebookController extends Controller
 
             ], 500);
         }
-
     }
-
+    
 }
