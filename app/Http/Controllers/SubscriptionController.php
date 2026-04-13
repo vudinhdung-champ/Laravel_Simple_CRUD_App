@@ -3,19 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Subscription;
 use App\Http\Requests\StoreSubscriptionRequest;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\SubscriptionResource;
+use App\Services\SubscriptionService;
 
 
 class SubscriptionController extends Controller
 {
-    public function index() {
+    protected $subscriptionService;
+
+    public function __construct(SubscriptionService $subscriptionService){
+        $this->subscriptionService = $subscriptionService;
+
+    }
+
+    public function index(Request $request) {
         try {
-            $subscriptions = Subscription::where('user_id', Auth::id())
-                                         ->orderBy('next_billing_date', 'asc')
-                                         ->get();
+            $subscriptions = $this->subscriptionService->getAllSubscriptions($request->user()->id);
 
             return response()->json([
                 'status' => 'success',
@@ -36,16 +40,7 @@ class SubscriptionController extends Controller
     public function store(StoreSubscriptionRequest $request) {
         try {
 
-            $subscriptions= Subscription::create([
-                'user_id' => $request->user()->id,
-                'service_name' => $request->service_name,
-                'price' => $request->price,
-                'billing_cycle' => $request->billing_cycle,
-                'next_billing_date' => $request->next_billing_date,
-                'status' => $request->status ?? 'active', // Mặc định là active nếu không gửi lên
-                'color_code' => $request->color_code,
-                'notes' => $request->notes,
-            ]);
+            $subscriptions = $this->subscriptionService->createSubscription($request->all(), $request->user()->id);
 
             return response()->json([
                 'status' => 'success',
@@ -66,10 +61,8 @@ class SubscriptionController extends Controller
 
     public function Update(StoreSubscriptionRequest $request, $id) {
         try {
-            $subscriptions = Subscription::where('user_id', $request->user()->id)
-                                          ->findOrFail($id);
+            $subscriptions = $this->subscriptionService->update($id, $request->all(), $request->user()->id);
             
-
             $subscriptions->update($request->all());
 
             return response()->json([
@@ -90,12 +83,10 @@ class SubscriptionController extends Controller
 
     }
 
-    public function Destroy($id) {
+    public function Destroy($id, Request $request) {
         try {
 
-        $subscriptions = Subscription::where('user_id', Auth::id())->findOrFail($id);
-
-        $subscriptions->delete();
+        $this->subscriptionService->deleteSubscription($id, $request->user()->id);
 
         return response()->json([
                 'status' => 'success',
@@ -109,8 +100,6 @@ class SubscriptionController extends Controller
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
 
             ], 500);
-
         }
-
     }
 }

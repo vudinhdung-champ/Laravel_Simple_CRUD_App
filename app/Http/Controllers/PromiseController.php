@@ -3,20 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Promise;
 use App\Http\Requests\StorePromiseRequest;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Resource\PromiseResource;
+use App\Http\Resources\PromiseResource;
+use App\Services\PromiseService;
 
 
 
 class PromiseController extends Controller
 {
-    public function index() {
+    protected $promiseService;
+    public function __construct(PromiseService $promiseService){
+        $this->promiseService = $promiseService;
+
+    }
+
+    public function index(Request $request) {
         try {
-            $promises = Promise::where('user_id', Auth::id())
-                                ->orderBy('deadline', 'asc')
-                                ->get();
+            $promises = $this->promiseService->getAllPromises($request->user()->id);
             
             return response()->json([
                 'status' => 'success',
@@ -38,20 +41,12 @@ class PromiseController extends Controller
     public function Store(StorePromiseRequest $request) {
         try {
 
-            $newPromises = Promise::create([
-                'user_id' => $request->user()->id,
-                'promiser_name' => $request->promiser_name,
-                'promise_content' => $request->promise_content,
-                'date_made' => $request->date_made,
-                'deadline' => $request->deadline,
-                'status' => $request->status,
-                'importance_level' => $request->importance_level
-            ]);
+            $newPromises = $this->promiseService->createPromise($request->all(), $request->user()->id);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Tạo thành công',
-                'data' => (new PromiseResource($promises))->resolve(),
+                'data' => (new PromiseResource($newPromises))->resolve(),
             ], 200);
 
 
@@ -66,10 +61,7 @@ class PromiseController extends Controller
 
     public function Update(StorePromiseRequest $request, $id) {
         try {
-            $promises = Promise::where('user_id', Auth::id())
-                                ->findOrFail($id);
-
-            $promises->update($request->all());
+            $promises = $this->promiseService->updatePromise($id, $request->all(), $request->user()->id);
 
             return response()->json([
                 'status' => 'success',
@@ -88,12 +80,9 @@ class PromiseController extends Controller
 
     }
 
-    public function Delete($id) {
+    public function Delete($id, Request $request) {
         try {
-            $promise = Promise::where('user_id', Auth::id())
-                               ->findOrFail($id);
-
-            $promise->delete();
+            $this->promiseService->deletePromise($request->user()->id, $id);
 
             return response()->json([
                 'status' => 'success',

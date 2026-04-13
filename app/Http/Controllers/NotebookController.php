@@ -3,20 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Notebook;
 use App\Http\Requests\StoreNotebookRequest;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\NotebookResource;
-
+use App\Services\NotebookService;
 
 
 class NotebookController extends Controller
 {
-    public function index() {
+    protected $notebookService;
+
+    public function __construct(NotebookService $notebookService){
+        $this->notebookService = $notebookService;
+
+    }
+
+    public function index(Request $request) {
         try {
-            $documents = Notebook::where('user_id', Auth::id())
-                                  ->orderBy('created_at', 'desc')
-                                  ->get();
+            $documents = $this->notebookService->getAllNotebooks($request->user()->id);
 
             return response()->json([
                 'status' => 'success',
@@ -38,13 +41,7 @@ class NotebookController extends Controller
 
     public function Store(StoreNotebookRequest $request) {
         try {
-            $documents = Notebook::create([
-                'user_id' => Auth->user()->id,
-                'title' => $request->title,
-                'content' => $request->content,
-                'category' => $request->category
-
-            ]);
+            $documents = $this->notebookService->createNotebook($request->user()->id, $request->all());
 
             return response()->json([
                 'status' => 'success',
@@ -66,10 +63,7 @@ class NotebookController extends Controller
 
     public function Update(StoreNotebookRequest $request, $id) {
         try {
-            $documents = Notebook::where('user_id', Auth::id())
-                                 ->findOrFail($id);
-            
-            $documents->update($request->all());
+            $documents = $this->notebookService->updateNotebook($id, $request->all(), $request->user()->id);
 
             return response()->json([
                 'status' => 'success',
@@ -88,12 +82,9 @@ class NotebookController extends Controller
         }
     }
 
-    public function Destroy($id) {
+    public function Destroy($id, Request $request) {
         try {
-            $documents = Notebook::where('user_id', Auth::id())
-                                  ->findOrFail($id);
-            
-            $documents->delete();
+            $this->notebookService->deleteNotebook($id, $request->user()->id);
 
             return response()->json([
                 'status' => 'success',
