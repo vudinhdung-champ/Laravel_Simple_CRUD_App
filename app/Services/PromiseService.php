@@ -38,4 +38,27 @@ class PromiseService
         
         return $this->repository->delete($promise);
     }
+
+    public function getPromisesForUser($userId, array $rawFilters)
+    {
+        if(isset($rawFilters['search']))
+        {
+            $rawFilters['search'] = trim($rawFilters['search']);
+        }
+
+        $perPage = (int) ($rawFilters['per_page'] ?? 10);
+
+        if($perPage > 30)
+        {
+            $perPage = 30;
+        }
+
+        else if($perPage < 1)
+        {
+            $perPage = 10;
+        }
+
+        return $this->repository->getListWithFilters($userId, $rawFilters, $perPage);
+
+    }
 }

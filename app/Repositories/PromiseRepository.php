@@ -35,4 +35,29 @@ class PromiseRepository
 
     }
 
+    public function getListWithFilters($userId, array $filters, $perPage) {
+        $query = Promise::where('user_id', $userId);
+
+        $query->when(isset($filters['search']), function ($q) use ($filters) {
+            $q->where('promiser_name', 'like', '%' . $filters['search'] . '%');
+        });
+
+        $allowedFilters = [
+            'status',
+            'importance_level'
+        ];
+
+        foreach ($filters as $keys => $value)
+        {
+            if(in_array($keys, $allowedFilters) && $value != null && $value != '')
+            {
+                $query->where($keys, $value);
+            }
+        }
+
+        return $query->orderBy('deadline', 'asc')->paginate($perPage);
+
+
+    }
+
 }

@@ -19,14 +19,20 @@ class NotebookController extends Controller
 
     public function index(Request $request) {
         try {
-            $documents = $this->notebookService->getAllNotebooks($request->user()->id);
 
-            return response()->json([
+            $filters = [
+                'category',
+                'page',
+                'per_page'
+            ];
+            
+            $documents = $this->notebookService->getNotebooksForUser($request->user()->id, $filters)
+
+            return NotebookResource::collection($documents)->additional([
                 'status' => 'success',
-                'message' => 'Thành công',
-                'data' => NotebookResource::collection($documents)->resolve(),
-            ], 200);
+                'message' => 'Lọc danh sách thành công'
 
+            ]);
 
         } catch(\Exception $e) {
             return response()->json([

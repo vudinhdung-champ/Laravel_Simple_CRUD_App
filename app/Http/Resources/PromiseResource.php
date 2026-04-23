@@ -17,17 +17,17 @@ class PromiseResource extends JsonResource
     {
         $startDate = Carbon::parse($this->date_made);
 
-        $Deadline = Carbon::parse($this->deadline);
+        $deadLine = Carbon::parse($this->deadline);
 
 
         return [
             'chiSo' => $this->id,
             'tenNguoiHua' => $this->promiser_name,
             'noiDung' => $this->promise_content,
-            'thoiDiemHua' => $startDate->format(d/m/Y),
-            'deadline' => $Deadline->format(d/m/Y),
+            'thoiDiemHua' => $startDate->format('d/m/Y'),
+            'deadline' => $deadLine->format('d/m/Y'),
             'Trangthai' => $this->status,
-            'doQuanTrong' => (int) $this->importance
+            'doQuanTrong' => (int) $this->importance_level
         ];
     }
 }

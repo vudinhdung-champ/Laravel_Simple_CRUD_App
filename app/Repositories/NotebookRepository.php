@@ -35,4 +35,33 @@ class NotebookRepository
 
     }
 
+
+    public function getListByFilters($userId, $perPage, array $filters) {
+
+        $query = Notebook::where('user_id', $userId);
+
+        $query->when(isset($filters['search']), function ($q) use ($filters) {
+            $q->where('title', 'like', '%' . $filters['search'] . '%')
+
+        });
+
+        $allowedFilters = [
+            'category',
+
+        ];
+
+        foreach ($filters as $keys => $value)
+        {
+            if(in_array($keys, $allowedFilters) && $value != null && $value != '')
+            {
+                $query->where($keys, $value);
+            }
+
+        }
+
+        return $query->orderBy('created_at', 'asc')->paginate($perPage);
+
+
+    }
+
 }

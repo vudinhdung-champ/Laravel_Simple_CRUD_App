@@ -19,13 +19,22 @@ class SubscriptionController extends Controller
 
     public function index(Request $request) {
         try {
-            $subscriptions = $this->subscriptionService->getAllSubscriptions($request->user()->id);
+            $filters = $request->only([
+                'search',
+                'status',
+                'billing_cycle',
+                'per_page',
+                'page',
+            ]);
 
-            return response()->json([
+
+            $subscriptions = $this->subscriptionService->getSubscriptionsForUser($request->user()->id, $filters);
+
+            return SubscriptionResource::collection($subscriptions)->additional([
                 'status' => 'success',
-                'data' => SubscriptionResource::collection($subscriptions)->resolve(),
+                'message' => 'Lọc danh sách thành công!'
+            ]);
 
-            ], 200);
 
         } catch(\Exception $e) {
             return response()->json([
@@ -62,8 +71,7 @@ class SubscriptionController extends Controller
     public function Update(StoreSubscriptionRequest $request, $id) {
         try {
             $subscriptions = $this->subscriptionService->update($id, $request->all(), $request->user()->id);
-            
-            $subscriptions->update($request->all());
+        
 
             return response()->json([
                 'status' => 'success',

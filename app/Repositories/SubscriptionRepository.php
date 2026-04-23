@@ -34,4 +34,29 @@ class SubscriptionRepository
 
     }
 
+    public function getListWithFilters($userId, array $filters, $perPage) {
+        $query = Subscription::where('user_id', $userId);
+        
+        $query->when(isset($filters['search']), function ($q) use ($filters) {
+            $q->where('service_name', 'like', '%' . $filters['search'] . '%');
+
+        });
+
+        $allowedFilters = [
+            'status',
+            'billing_cycle',
+        ];
+
+        foreach($filters as $key => $value)
+        {
+            if(in_array($key, $allowedFilters) && $value != null && $value != '')
+            {
+                $query->where($key, $value);
+            }
+        }
+
+        return $query->orderBy('next_billing_date', 'asc')->paginate($perPage);
+        
+    }
+
 }

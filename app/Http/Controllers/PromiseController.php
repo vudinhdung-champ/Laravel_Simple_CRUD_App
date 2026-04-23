@@ -19,15 +19,25 @@ class PromiseController extends Controller
 
     public function index(Request $request) {
         try {
-            $promises = $this->promiseService->getAllPromises($request->user()->id);
+
+    
+            $filters = $request->only([
+                'promiser_name',
+                'importance_level',
+                'status',
+                'page',
+                'per_page'
+
+            ]);
+
+            $promises = $this->promiseService->getPromisesForUser($request->user()->id, $filters);
             
-            return response()->json([
+            return PromiseResource::collection($promises)->additional([
                 'status' => 'success',
-                'message' => 'Xem danh sách thành công',
-                'data' => PromiseResource::collection($promises)->resolve(),
+                'message' => 'Lọc danh sách thành công!'
 
-            ], 200);
-
+            ]);
+        
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
