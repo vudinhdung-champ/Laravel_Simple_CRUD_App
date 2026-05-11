@@ -29,6 +29,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::apiResource('/subscriptions', SubscriptionController::class);
 
+    Route::get('/me', [AuthController::class, 'Me']);
+
     Route::apiResource('/promises', PromiseController::class);
 
     Route::apiResource('/notebooks', NotebookController::class);

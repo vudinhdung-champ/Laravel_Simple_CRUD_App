@@ -15,12 +15,12 @@ class SubscriptionService
 
     public function getAllSubscriptions($userId)
     {
-        return $this->repository->getByUser($userId);
+        return $this->repository->getByUsers($userId);
     }
 
     public function createSubscription(array $data, $userId)
     {
-        
+
         $data['user_id'] = $userId;
         $data['status'] = $data['status'] ?? 'active';
 
@@ -36,31 +36,28 @@ class SubscriptionService
 
     public function deleteSubscription($id, $userId)
     {
-        
+
         $subscription = $this->repository->findByUserAndId($userId, $id);
 
         return $this->repository->delete($subscription);
     }
 
-    public function getSubscriptionsForUser($userId, array $rawFilters) {
+    public function getSubscriptionsForUser($userId, array $rawFilters)
+    {
 
-        if(isset($rawFilters['search']))
-        {
+        if (isset($rawFilters['search'])) {
             $rawFilters['search'] = trim($rawFilters['search']);
         }
 
         $perPage = (int) ($rawFilters['per_page'] ?? 10);
 
-        if($perPage > 30)
-        {
+        if ($perPage > 30) {
             $perPage = 30;
-        }
-        else if($perPage < 1)
-        {
+        } else if ($perPage < 1) {
             $perPage = 10;
         }
 
-        return $this->repository->getListWithFilters($userId, $rawFilters, $perPage);
+        return $this->repository->getListByFilters($userId, $rawFilters, $perPage);
 
     }
 }

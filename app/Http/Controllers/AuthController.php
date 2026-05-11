@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
 
-    public function Register(Request $request) {
+    public function Register(Request $request)
+    {
         $request->validate([
             'username' => ['required', 'min:3', 'unique:users,username'],
             'email' => ['required', 'email', 'unique:users,email'],
@@ -36,11 +37,12 @@ class AuthController extends Controller
                 'type' => 'bearer'
             ]
 
-        ], 201); 
+        ], 201);
     }
 
 
-    public function Login(Request $request) {
+    public function Login(Request $request)
+    {
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string'
@@ -50,12 +52,11 @@ class AuthController extends Controller
 
         $token = Auth::guard('api')->attempt($credentials);
 
-        if(!$token)
-        {
+        if (!$token) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Đăng nhập thất bại, username hoặc password không đúng'
-            ], 401);    
+            ], 401);
         }
 
         return response()->json([
@@ -67,10 +68,11 @@ class AuthController extends Controller
                 'type' => 'bearer'
             ]
         ], 200);
-    } 
-    
+    }
 
-    public function Logout(Request $request) {
+
+    public function Logout(Request $request)
+    {
         Auth::guard('api')->logout();
 
         return response()->json([
@@ -81,9 +83,9 @@ class AuthController extends Controller
     }
 
 
-    public function Refresh() {
-        try
-        {
+    public function Refresh()
+    {
+        try {
             $newToken = Auth::guard('api')->refresh();
 
             return response()->json([
@@ -94,14 +96,22 @@ class AuthController extends Controller
                     'type' => 'bearer'
                 ]
             ], 200);
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Làm mới không thành công'
             ], 401);
         }
+    }
+
+    public function Me()
+    {
+        $user = Auth::user();
+
+        return response()->json([
+            'success' => true,
+            'data' => $user,
+        ]);
     }
 
 }

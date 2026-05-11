@@ -16,13 +16,13 @@ class NotebookResource extends JsonResource
     public function toArray(Request $request): array
     {
         $startDate = Carbon::parse($this->created_at);
-    
+
         return [
-            'chiSo' => $this->id,
-            'tieuDe' => $this->title,
-            'noiDung' => $this->content,
-            'theLoai' => $this->category,
-            'ngayTao' => $startDate->format('d/m/Y')
+            'id' => $this->id,
+            'title' => $this->title,
+            'content' => $this->content,
+            'category' => $this->category,
+            'createdAt' => $startDate->format('d/m/Y')
 
         ];
     }

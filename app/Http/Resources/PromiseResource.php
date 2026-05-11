@@ -21,13 +21,13 @@ class PromiseResource extends JsonResource
 
 
         return [
-            'chiSo' => $this->id,
-            'tenNguoiHua' => $this->promiser_name,
-            'noiDung' => $this->promise_content,
-            'thoiDiemHua' => $startDate->format('d/m/Y'),
+            'id' => $this->id,
+            'promiser_name' => $this->promiser_name,
+            'promise_content' => $this->promise_content,
+            'date_made' => $startDate->format('d/m/Y'),
             'deadline' => $deadLine->format('d/m/Y'),
-            'Trangthai' => $this->status,
-            'doQuanTrong' => (int) $this->importance_level
+            'status' => $this->status,
+            'importance_level' => (int) $this->importance_level
         ];
     }
 }

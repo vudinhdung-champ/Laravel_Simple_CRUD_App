@@ -8,55 +8,63 @@ use App\Models\Subscription;
 class SubscriptionRepository
 {
 
-    public function getByUsers($userId){
+    public function getByUsers($userId)
+    {
         return Subscription::where('user_id', $userId)
-                            ->orderBy('next_billing_date', 'asc')
-                            ->get();
+            ->orderBy('next_billing_date', 'asc')
+            ->get();
 
     }
 
-    public function create(array $data){
+    public function create(array $data)
+    {
         return Subscription::create($data);
     }
 
-    public function findByUserAndId($userId, $id){
+    public function findByUserAndId($userId, $id)
+    {
         return Subscription::where('user_id', $userId)->findOrFail($id);
 
     }
 
-    public function update($subscription, array $data){
+    public function update($subscription, array $data)
+    {
         $subscription->update($data);
         return $subscription;
     }
 
-    public function delete($subscription){
+    public function delete($subscription)
+    {
         return $subscription->delete();
 
     }
 
-    public function getListWithFilters($userId, array $filters, $perPage) {
+    public function getListByFilters($userId, array $filters, $perPage)
+    {
         $query = Subscription::where('user_id', $userId);
-        
+
+        // Tìm kiếm theo tên của service //
+
         $query->when(isset($filters['search']), function ($q) use ($filters) {
             $q->where('service_name', 'like', '%' . $filters['search'] . '%');
 
         });
+
+        // Các trường để duyệt theo //
 
         $allowedFilters = [
             'status',
             'billing_cycle',
         ];
 
-        foreach($filters as $key => $value)
-        {
-            if(in_array($key, $allowedFilters) && $value != null && $value != '')
-            {
+        foreach ($filters as $key => $value) {
+            if (in_array($key, $allowedFilters) && $value != null && $value != '') {
                 $query->where($key, $value);
             }
         }
 
         return $query->orderBy('next_billing_date', 'asc')->paginate($perPage);
-        
+
     }
 
 }

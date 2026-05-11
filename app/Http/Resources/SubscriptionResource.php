@@ -19,29 +19,24 @@ class SubscriptionResource extends JsonResource
 
         $daysLeft = now()->diffInDays($targetDate, false);
         $thong_bao_han = "";
-        if($daysLeft < 0)
-        {
-            $thong_bao_han = "Đã hết hạn " . abs((int)$daysLeft) . " ngày";
-        }
-        else if($daysLeft == 0)
-        {
+        if ($daysLeft < 0) {
+            $thong_bao_han = "Đã hết hạn " . abs((int) $daysLeft) . " ngày";
+        } else if ($daysLeft == 0) {
             $thong_bao_han = "Đến hạn thanh toán hôm nay";
-        }
-        else if($daysLeft > 0)
-        {
-            $thong_bao_han = "Còn " . (int)$daysLeft . " ngày nữa là đến hạn";
+        } else if ($daysLeft > 0) {
+            $thong_bao_han = "Còn " . (int) $daysLeft . " ngày nữa là đến hạn";
         }
         return [
-            'chiSo' => (int) $this->id,
-            'tenDichVu' => $this->service_name,
-            'giaTien' => (float) $this->price,
-            'chuKy' => $this->billing_cycle,
-            'trangThai' => $this->status,
-            'mauSac' => $this->color_code,
-            'ghiChu' => $this->notes,
-            'ngayThuTien' => $targetDate->format('d/m/Y'),
-            'hienThiHanMuc' => $thong_bao_han,
-            'laBaoDongDo' => $daysLeft <= 3 ? true : false
+            'id' => (int) $this->id,
+            'service_name' => $this->service_name,
+            'price' => (float) $this->price,
+            'billing_cycle' => $this->billing_cycle,
+            'status' => $this->status,
+            'color_code' => $this->color_code,
+            'notes' => $this->notes,
+            'next_billing_date' => $targetDate->format('d/m/Y'),
+            'alert_message' => $thong_bao_han,
+            'is_red_alert' => $daysLeft <= 3 ? true : false
         ];
     }
 }
