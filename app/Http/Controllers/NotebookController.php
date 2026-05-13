@@ -12,20 +12,22 @@ class NotebookController extends Controller
 {
     protected $notebookService;
 
-    public function __construct(NotebookService $notebookService){
+    public function __construct(NotebookService $notebookService)
+    {
         $this->notebookService = $notebookService;
 
     }
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         try {
 
-            $filters = [
+            $filters = $request->only([
                 'category',
                 'page',
                 'per_page'
-            ];
-            
+            ]);
+
             $documents = $this->notebookService->getNotebooksForUsers($request->user()->id, $filters);
 
             return NotebookResource::collection($documents)->additional([
@@ -34,7 +36,7 @@ class NotebookController extends Controller
 
             ]);
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Đã xảy ra lỗi: ' . $e->getMessage()
@@ -45,7 +47,8 @@ class NotebookController extends Controller
     }
 
 
-    public function Store(StoreNotebookRequest $request) {
+    public function store(StoreNotebookRequest $request)
+    {
         try {
             $documents = $this->notebookService->createNotebook($request->all(), $request->user()->id);
 
@@ -53,11 +56,11 @@ class NotebookController extends Controller
                 'status' => 'success',
                 'message' => 'Tạo thành công',
                 'data' => (new NotebookResource($documents))->resolve(),
-        
+
             ], 200);
 
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Đã xảy ra lỗi: ' . $e->getMessage()
@@ -67,7 +70,8 @@ class NotebookController extends Controller
         }
     }
 
-    public function Update(StoreNotebookRequest $request, $id) {
+    public function update(StoreNotebookRequest $request, $id)
+    {
         try {
             $documents = $this->notebookService->updateNotebook($id, $request->all(), $request->user()->id);
 
@@ -78,17 +82,18 @@ class NotebookController extends Controller
 
             ], 200);
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Lỗi xảy ra: ' .$e->getMessage()
+                'message' => 'Lỗi xảy ra: ' . $e->getMessage()
 
             ], 500);
 
         }
     }
 
-    public function Destroy($id, Request $request) {
+    public function destroy($id, Request $request)
+    {
         try {
             $this->notebookService->deleteNotebook($id, $request->user()->id);
 
@@ -98,13 +103,13 @@ class NotebookController extends Controller
 
             ], 200);
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Có lỗi xảy ra: ' .$e->getMessage()
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
 
             ], 500);
         }
     }
-    
+
 }

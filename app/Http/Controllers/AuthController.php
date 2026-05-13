@@ -29,14 +29,8 @@ class AuthController extends Controller
         $token = Auth::guard('api')->login($user);
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Đăng ký tài khoản thành công',
+            'token' => $token,
             'user' => $user,
-            'authorization' => [
-                'token' => $token,
-                'type' => 'bearer'
-            ]
-
         ], 201);
     }
 
@@ -60,13 +54,8 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Đăng nhập thành công',
+            'token' => $token,
             'user' => Auth::guard('api')->user(),
-            'authorization' => [
-                'token' => $token,
-                'type' => 'bearer'
-            ]
         ], 200);
     }
 
@@ -89,12 +78,7 @@ class AuthController extends Controller
             $newToken = Auth::guard('api')->refresh();
 
             return response()->json([
-                'status' => 'success',
-                'message' => 'Làm mới token thành công',
-                'authorization' => [
-                    'token' => $newToken,
-                    'type' => 'bearer'
-                ]
+                'token' => $newToken,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -106,12 +90,7 @@ class AuthController extends Controller
 
     public function Me()
     {
-        $user = Auth::user();
-
-        return response()->json([
-            'success' => true,
-            'data' => $user,
-        ]);
+        return response()->json(Auth::guard('api')->user());
     }
 
 }

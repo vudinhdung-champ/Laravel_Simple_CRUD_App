@@ -12,12 +12,14 @@ class SubscriptionController extends Controller
 {
     protected $subscriptionService;
 
-    public function __construct(SubscriptionService $subscriptionService){
+    public function __construct(SubscriptionService $subscriptionService)
+    {
         $this->subscriptionService = $subscriptionService;
 
     }
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         try {
             $filters = $request->only([
                 'search',
@@ -36,17 +38,18 @@ class SubscriptionController extends Controller
             ]);
 
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage() 
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
             ], 500);
 
         }
 
     }
 
-    public function store(StoreSubscriptionRequest $request) {
+    public function store(StoreSubscriptionRequest $request)
+    {
         try {
 
             $subscriptions = $this->subscriptionService->createSubscription($request->all(), $request->user()->id);
@@ -58,7 +61,7 @@ class SubscriptionController extends Controller
             ], 200);
 
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
@@ -68,10 +71,11 @@ class SubscriptionController extends Controller
 
     }
 
-    public function Update(StoreSubscriptionRequest $request, $id) {
+    public function update(StoreSubscriptionRequest $request, $id)
+    {
         try {
-            $subscriptions = $this->subscriptionService->update($id, $request->all(), $request->user()->id);
-        
+            $subscriptions = $this->subscriptionService->updateSubscription($id, $request->all(), $request->user()->id);
+
 
             return response()->json([
                 'status' => 'success',
@@ -81,7 +85,7 @@ class SubscriptionController extends Controller
             ], 200);
 
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
@@ -91,18 +95,19 @@ class SubscriptionController extends Controller
 
     }
 
-    public function Destroy($id, Request $request) {
+    public function destroy($id, Request $request)
+    {
         try {
 
-        $this->subscriptionService->deleteSubscription($id, $request->user()->id);
+            $this->subscriptionService->deleteSubscription($id, $request->user()->id);
 
-        return response()->json([
+            return response()->json([
                 'status' => 'success',
                 'message' => 'Xoá thành công',
 
-        ], 200);
+            ], 200);
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),

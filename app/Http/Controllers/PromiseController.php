@@ -49,7 +49,7 @@ class PromiseController extends Controller
 
     }
 
-    public function Store(StorePromiseRequest $request)
+    public function store(StorePromiseRequest $request)
     {
         try {
 
@@ -71,7 +71,7 @@ class PromiseController extends Controller
         }
     }
 
-    public function Update(StorePromiseRequest $request, $id)
+    public function update(StorePromiseRequest $request, $id)
     {
         try {
             $promises = $this->promiseService->updatePromise($id, $request->all(), $request->user()->id);
@@ -93,7 +93,7 @@ class PromiseController extends Controller
 
     }
 
-    public function Delete($id, Request $request)
+    public function destroy($id, Request $request)
     {
         try {
             $this->promiseService->deletePromise($id, $request->user()->id);
