@@ -8,7 +8,7 @@ class PromiseRepository
 {
     public function getByUser($userId){
         return Promise::where('user_id', $userId)
-                        ->orderBy('next_billing_date', 'asc')
+                        ->orderBy('deadline', 'asc')
                         ->get();
     }
 

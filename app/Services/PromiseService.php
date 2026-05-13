@@ -27,14 +27,14 @@ class PromiseService
 
     public function updatePromise($id, array $data, $userId)
     {
-        $promise = $this->repository->findByUserAndId($userId, $id);
+        $promise = $this->repository->getByUserAndId($userId, $id);
 
         return $this->repository->update($promise, $data);
     }
 
     public function deletePromise($id, $userId)
     {
-        $promise = $this->repository->findByUserAndId($userId, $id);
+        $promise = $this->repository->getByUserAndId($userId, $id);
         
         return $this->repository->delete($promise);
     }

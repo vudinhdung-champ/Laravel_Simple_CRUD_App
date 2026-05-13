@@ -26,7 +26,7 @@ class NotebookController extends Controller
                 'per_page'
             ];
             
-            $documents = $this->notebookService->getNotebooksForUser($request->user()->id, $filters)
+            $documents = $this->notebookService->getNotebooksForUsers($request->user()->id, $filters);
 
             return NotebookResource::collection($documents)->additional([
                 'status' => 'success',
@@ -47,7 +47,7 @@ class NotebookController extends Controller
 
     public function Store(StoreNotebookRequest $request) {
         try {
-            $documents = $this->notebookService->createNotebook($request->user()->id, $request->all());
+            $documents = $this->notebookService->createNotebook($request->all(), $request->user()->id);
 
             return response()->json([
                 'status' => 'success',
