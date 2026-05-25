@@ -28,15 +28,15 @@ class SubscriptionResource extends JsonResource
         }
         return [
             'id' => (int) $this->id,
-            'service_name' => $this->service_name,
+            'serviceName' => $this->service_name,
             'price' => (float) $this->price,
-            'billing_cycle' => $this->billing_cycle,
+            'billingCycle' => $this->billing_cycle,
             'status' => $this->status,
-            'color_code' => $this->color_code,
+            'colorCode' => $this->color_code,
             'notes' => $this->notes,
-            'next_billing_date' => $targetDate->format('d/m/Y'),
-            'alert_message' => $thong_bao_han,
-            'is_red_alert' => $daysLeft <= 3 ? true : false
+            'nextBillingDate' => $targetDate->format('d/m/Y'),
+            'alertMessage' => $thong_bao_han,
+            'isRedAlert' => $daysLeft <= 3 ? true : false
         ];
     }
 }

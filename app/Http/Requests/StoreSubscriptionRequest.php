@@ -24,12 +24,25 @@ class StoreSubscriptionRequest extends FormRequest
     {
         return [
             'service_name' => 'required|string|max:255',
-            'price' => 'required|integer',
+            'price' => 'required|integer|min:0',
             'billing_cycle' => 'required|string',
             'next_billing_date' => 'required|date',
             'status' => 'nullable|string',
             'color_code' => 'nullable|string',
             'notes' => 'nullable|string',
+        ];
+    }
+
+    public function validationData(): array
+    {
+        return [
+            'service_name' => $this->input('serviceName'),
+            'price' => $this->input('price'),
+            'billing_cycle' => $this->input('billingCycle'),
+            'next_billing_date' => $this->input('nextBillingDate'),
+            'status' => $this->input('status'),
+            'color_code' => $this->input('colorCode'),
+            'notes' => $this->input('notes')
         ];
     }
 }

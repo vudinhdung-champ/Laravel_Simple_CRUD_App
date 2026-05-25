@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\SubscriptionRepository;
+use Illuminate\Support\Arr;
 
 class SubscriptionService
 {
@@ -20,18 +21,38 @@ class SubscriptionService
 
     public function createSubscription(array $data, $userId)
     {
-
-        $data['user_id'] = $userId;
-        $data['status'] = $data['status'] ?? 'active';
-
-        return $this->repository->create($data);
+        return $this->repository->create([
+            'user_id' => $userId,
+            'service_name' => Arr::get($data, 'serviceName'),
+            'price' => Arr::get($data, 'price'),
+            'billing_cycle' => Arr::get($data, 'billingCycle'),
+            'next_billing_date' => Arr::get($data, 'nextBillingDate'),
+            'status' => Arr::get($data, 'status'),
+            'notes' => Arr::get($data, 'notes'),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 
     public function updateSubscription($id, array $data, $userId)
     {
+        \Log::info('UPDATE DATA:', $data); // ← thêm dòng này tạm thời để test //
+
         $subscription = $this->repository->findByUserAndId($userId, $id);
 
-        return $this->repository->update($subscription, $data);
+        $mapped = array_filter([
+            'service_name' => Arr::get($data, 'serviceName'),
+            'price' => Arr::get($data, 'price'),
+            'billing_cycle' => Arr::get($data, 'billingCycle'),
+            'next_billing_date' => Arr::get($data, 'nextBillingDate'),
+            'status' => Arr::get($data, 'status'),
+            'notes' => Arr::get($data, 'notes'),
+            'updated_at' => now()
+
+        ], fn($v) => $v !== null);
+
+        return $this->repository->update($subscription, $mapped);
+
     }
 
     public function deleteSubscription($id, $userId)
@@ -49,12 +70,12 @@ class SubscriptionService
             $rawFilters['search'] = trim($rawFilters['search']);
         }
 
-        $perPage = (int) ($rawFilters['per_page'] ?? 10);
+        $perPage = (int) ($rawFilters['per_page'] ?? 9);
 
         if ($perPage > 30) {
             $perPage = 30;
         } else if ($perPage < 1) {
-            $perPage = 10;
+            $perPage = 9;
         }
 
         return $this->repository->getListByFilters($userId, $rawFilters, $perPage);

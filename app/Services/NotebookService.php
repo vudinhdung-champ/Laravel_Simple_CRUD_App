@@ -2,6 +2,7 @@
 
 namespace App\Services;
 use App\Repositories\NotebookRepository;
+use Illuminate\Support\Arr;
 
 class NotebookService
 {
@@ -21,9 +22,14 @@ class NotebookService
     public function createNotebook(array $data, $userId)
     {
 
-        $data['user_id'] = $userId;
-
-        return $this->repository->create($data);
+        return $this->repository->create([
+            'user_id' => $userId,
+            'title' => Arr::get($data, 'title'),
+            'content' => Arr::get($data, 'content'),
+            'category' => Arr::get($data, 'category'),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 
     public function updateNotebook($id, array $data, $userId)
@@ -46,12 +52,12 @@ class NotebookService
             $rawFilters['search'] = trim($rawFilters['search']);
         }
 
-        $perPage = (int) ($rawFilters['per_page'] ?? 10);
+        $perPage = (int) ($rawFilters['per_page'] ?? 9);
 
         if ($perPage > 30) {
             $perPage = 30;
         } else if ($perPage < 1) {
-            $perPage = 10;
+            $perPage = 9;
         }
 
         return $this->repository->getListByFilters($userId, $perPage, $rawFilters);

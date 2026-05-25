@@ -29,14 +29,19 @@ class StorePromiseRequest extends FormRequest
             'deadline' => 'nullable|date|after_or_equal:date_made',
             'status' => 'nullable|string|in:pending,kept,broken',
             'importance_level' => 'nullable|integer|min:1|max:5',
-            
+
         ];
     }
 
-    public function messages(): array {
+    public function validationData(): array
+    {
         return [
-
-
+            'promiser_name' => $this->input('promiserName'),
+            'promise_content' => $this->input('promiseContent'),
+            'date_made' => $this->input('dateMade'),
+            'deadline' => $this->input('deadline'),
+            'status' => $this->input('status'),
+            'importance_level' => $this->input('importanceLevel'),
         ];
     }
 }

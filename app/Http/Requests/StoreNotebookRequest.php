@@ -28,4 +28,13 @@ class StoreNotebookRequest extends FormRequest
             'category' => 'required|string|max:20'
         ];
     }
+
+    public function validationData(): array
+    {
+        return [
+            'title' => $this->input('title'),
+            'content' => $this->input('content'),
+            'category' => $this->input('category'),
+        ];
+    }
 }

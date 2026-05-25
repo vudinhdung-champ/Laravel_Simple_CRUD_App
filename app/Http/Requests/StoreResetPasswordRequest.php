@@ -28,4 +28,13 @@ class StoreResetPasswordRequest extends FormRequest
             'password' => ['required', 'min:8', 'confirmed']
         ];
     }
+
+    public function validationData(): array
+    {
+        return [
+            'email' => $this->input('email'),
+            'token' => $this->input('token'),
+            'password' => $this->input('password'),
+        ];
+    }
 }
