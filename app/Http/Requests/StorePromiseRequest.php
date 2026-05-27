@@ -27,7 +27,7 @@ class StorePromiseRequest extends FormRequest
             'promise_content' => 'required|string',
             'date_made' => 'required|date',
             'deadline' => 'nullable|date|after_or_equal:date_made',
-            'status' => 'nullable|string|in:pending,kept,broken',
+            'status' => 'nullable|string|in:pending,completed,cancelled',
             'importance_level' => 'nullable|integer|min:1|max:5',
 
         ];

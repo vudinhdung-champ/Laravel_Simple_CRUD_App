@@ -25,9 +25,9 @@ class StoreSubscriptionRequest extends FormRequest
         return [
             'service_name' => 'required|string|max:255',
             'price' => 'required|integer|min:0',
-            'billing_cycle' => 'required|string',
+            'billing_cycle' => 'required|string|in:yearly,monthly,weekly,',
             'next_billing_date' => 'required|date',
-            'status' => 'nullable|string',
+            'status' => 'nullable|string|in:active,inactive,cancelled',
             'color_code' => 'nullable|string',
             'notes' => 'nullable|string',
         ];

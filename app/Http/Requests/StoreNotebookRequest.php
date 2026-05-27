@@ -25,7 +25,13 @@ class StoreNotebookRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'category' => 'required|string|max:20'
+            'category' => [
+                'required', 
+                'string', 
+                'max:20',
+                Rule::in(['Công việc', 'Học tập', 'Cá nhân']), 
+                
+            ],
         ];
     }
 
