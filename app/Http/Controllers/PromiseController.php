@@ -23,7 +23,7 @@ class PromiseController extends Controller
         try {
 
             $filters = $request->only([
-                'promiser_name',
+                'search',
                 'importance_level',
                 'status',
                 'page',

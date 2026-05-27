@@ -63,4 +63,9 @@ class NotebookService
         return $this->repository->getListByFilters($userId, $perPage, $rawFilters);
 
     }
+
+    public function getNotebookById($id, $userId)
+    {
+        return $this->repository->getByUserAndId($userId, $id);
+    }
 }

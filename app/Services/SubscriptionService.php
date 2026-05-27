@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\SubscriptionRepository;
 use Illuminate\Support\Arr;
+use App\Models\Subscription;
 
 class SubscriptionService
 {
@@ -79,6 +80,28 @@ class SubscriptionService
         }
 
         return $this->repository->getListByFilters($userId, $rawFilters, $perPage);
+
+    }
+
+    public function getTotalCost($userId)
+    {
+        $totals = Subscription::where('user_id', $userId)
+            ->where('status', 'active')
+            ->selectRaw("
+                SUM(CASE WHEN billing_cycle = 'monthly' THEN price ELSE 0 END) as sum_monthly,
+                SUM(CASE WHEN billing_cycle = 'yearly' THEN price ELSE 0 END) as sum_yearly     
+            ")->first();
+
+        $sumMonthly = (float) ($totals->sum_monthly ?? 0);
+        $sumYearly = (float) ($totals->sum_yearly ?? 0);
+
+        $totalMonthly = $sumMonthly;
+        $totalYearly = $sumYearly + ($sumMonthly * 12);
+
+        return [
+            'totalMonthly' => $totalMonthly,
+            'totalYearly' => $totalYearly
+        ];
 
     }
 }

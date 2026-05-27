@@ -23,6 +23,7 @@ class NotebookController extends Controller
         try {
 
             $filters = $request->only([
+                'search',
                 'category',
                 'page',
                 'per_page'
@@ -110,6 +111,29 @@ class NotebookController extends Controller
 
             ], 500);
         }
+    }
+
+    public function show($id, Request $request)
+    {
+        try {
+            $document = $this->notebookService->getNotebookById($id, $request->user()->id);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Lấy chi tiết thành công',
+                'data' => (new NotebookResource($document))->resolve(),
+
+            ], 200);
+
+        } catch(\Exception $e) {
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Lỗi xảy ra: ' . $e->getMessage(),
+
+            ], 500);
+        }
+
     }
 
 }

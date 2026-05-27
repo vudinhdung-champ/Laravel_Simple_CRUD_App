@@ -29,12 +29,17 @@ class SubscriptionController extends Controller
                 'page',
             ]);
 
-
+            // Lấy danh sách phân trang //
             $subscriptions = $this->subscriptionService->getSubscriptionsForUser($request->user()->id, $filters);
+
+            // Tính tổng chi phí status == active //
+            $totalCost = $this->subscriptionService->getTotalCost($request->user()->id);
+
 
             return SubscriptionResource::collection($subscriptions)->additional([
                 'status' => 'success',
-                'message' => 'Lọc danh sách thành công!'
+                'message' => 'Lọc danh sách thành công!',
+                'totalCost' => $totalCost
             ]);
 
 
