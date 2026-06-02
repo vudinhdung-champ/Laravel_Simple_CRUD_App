@@ -65,12 +65,12 @@ class PromiseService
             $rawFilters['search'] = trim($rawFilters['search']);
         }
 
-        $perPage = (int) ($rawFilters['per_page'] ?? 8);
+        $perPage = (int) ($rawFilters['per_page'] ?? 9);
 
         if ($perPage > 30) {
             $perPage = 30;
         } else if ($perPage < 1) {
-            $perPage = 10;
+            $perPage = 9;
         }
 
         return $this->repository->getListWithFilters($userId, $rawFilters, $perPage);

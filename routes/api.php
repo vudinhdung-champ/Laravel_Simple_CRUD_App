@@ -27,6 +27,9 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/refresh', [AuthController::class, 'Refresh']);
 
+    // Export toàn bộ dữ liệu (3 model) → gửi email //
+    Route::post('/export-all-email', [SubscriptionController::class, 'exportAllAndEmail']);
+
     Route::apiResource('/subscriptions', SubscriptionController::class);
 
     Route::get('/me', [AuthController::class, 'Me']);

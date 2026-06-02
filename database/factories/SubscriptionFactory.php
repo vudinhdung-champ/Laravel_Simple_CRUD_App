@@ -18,7 +18,7 @@ class SubscriptionFactory extends Factory
             'price' => fake()->numberBetween(100, 10000),
             'billing_cycle' => fake()->randomElement(['monthly', 'yearly', 'weekly']),
             'next_billing_date' => fake()->dateTimeBetween('now', '+1 year')->format('Y-m-d'),
-            'status' => fake()->randomElement(['active', 'cancelled', 'paused']),
+            'status' => fake()->randomElement(['active', 'inactive', 'cancelled']),
             'color_code' => fake()->hexColor(),
             'notes' => fake()->sentence(),
         ];

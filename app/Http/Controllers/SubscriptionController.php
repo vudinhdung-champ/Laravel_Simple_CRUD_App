@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreSubscriptionRequest;
 use App\Http\Resources\SubscriptionResource;
 use App\Services\SubscriptionService;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\AllDataExport;
+use App\Mail\AllDataExportMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 
 class SubscriptionController extends Controller
@@ -31,7 +36,7 @@ class SubscriptionController extends Controller
 
             // Lấy danh sách phân trang //
             $subscriptions = $this->subscriptionService->getSubscriptionsForUser($request->user()->id, $filters);
-
+            info('>>>check subscrip:  ' . json_encode($subscriptions));
             // Tính tổng chi phí status == active //
             $totalCost = $this->subscriptionService->getTotalCost($request->user()->id);
 
@@ -117,6 +122,43 @@ class SubscriptionController extends Controller
                 'status' => 'error',
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
 
+            ], 500);
+        }
+    }
+
+    public function exportAllAndEmail(Request $request)
+    {
+        try {
+            $user   = $request->user();
+            $userId = $user->id;
+
+            // 1. Đặt tên file theo user + timestamp
+            $fileName = 'du_lieu_' . $userId . '_' . now()->format('Ymd_His') . '.xlsx';
+            $relativePath = 'exports/' . $fileName;
+
+            // 2. Tạo thư mục exports nếu chưa có
+            Storage::disk('local')->makeDirectory('exports');
+
+            // 3. Tạo file Excel gồm 3 sheet
+            Excel::store(new AllDataExport($userId), $relativePath);
+
+            // 4. Gửi mail kèm file
+            Mail::to($user->email)->send(
+                new AllDataExportMail($relativePath, $user->username)
+            );
+
+            // 5. Xóa file tạm sau khi gửi xong
+            Storage::delete($relativePath);
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Dữ liệu đã được xuất và gửi tới: ' . $user->email,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
             ], 500);
         }
     }

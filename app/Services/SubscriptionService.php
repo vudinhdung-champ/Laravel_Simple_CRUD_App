@@ -91,6 +91,7 @@ class SubscriptionService
                 SUM(CASE WHEN billing_cycle = 'monthly' THEN price ELSE 0 END) as sum_monthly,
                 SUM(CASE WHEN billing_cycle = 'yearly' THEN price ELSE 0 END) as sum_yearly     
             ")->first();
+            info("totals: " . json_encode($totals));
 
         $sumMonthly = (float) ($totals->sum_monthly ?? 0);
         $sumYearly = (float) ($totals->sum_yearly ?? 0);
